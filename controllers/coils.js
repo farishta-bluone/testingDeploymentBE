@@ -1,4 +1,4 @@
-const Coil = require('../models/Coil');
+const Coil = require('../models/coil');
 
 exports.getCoils = (req, res, next) => {
     console.log(req.body, req.params, req.query)
