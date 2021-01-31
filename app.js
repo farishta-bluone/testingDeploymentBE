@@ -29,7 +29,7 @@ app.use('/list', listRoutes);
 
 app.use('/add', addRoutes);
 
-app.use('/', (req, res, next) => {
+app.get('/', (req, res, next) => {
     res.send("<h1>VM BE App</h1")
 });
 
