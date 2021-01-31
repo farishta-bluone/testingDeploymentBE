@@ -33,4 +33,6 @@ app.use('/', (req, res, next) => {
     res.send("<h1>VM BE App</h1")
 });
 
-app.listen(PORT);
+app.listen(PORT,() => {
+    console.log("portNo", PORT);
+})
