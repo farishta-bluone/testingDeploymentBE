@@ -1,12 +1,10 @@
 const express = require("express");
 
-const http = require("http")
-
 // const path = require("path");
 const dotenv = require('dotenv');
 dotenv.config();
 
-// const PORT = process.env.PORT || 5050;
+const PORT = 5000;
 const bodyParser = require("body-parser");
 
 const cors = require('cors')
@@ -37,10 +35,6 @@ app.get('/', (req, res, next) => {
     res.send("<h1>VM BE App</h1")
 });
 
-http.createServer(app).listen(app.get('port'), () => {
-    console.log("portNo", app.get('port'));
-});
-
-// app.listen(,() => {
-//     console.log("portNo", PORT);
-// })
+app.listen(PORT,() => {
+    console.log("portNo", PORT);
+})
