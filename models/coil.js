@@ -1,23 +1,43 @@
 const db = require('../util/database');
 
 module.exports = class Coil {
-    constructor(id, created_at, company, brand_no, status, weight, thickness, width, date, is_avilable) {
+    constructor(id, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od) {
         this.id = id;
         this.created_at = created_at;
+        this.updated_at = updated_at;
         this.company = company;
         this.brand_no = brand_no;
         this.status = status;
         this.weight = weight;
+        this.formulated_weight = formulated_weight;
         this.thickness = thickness;
         this.width = width;
         this.date = date;
         this.is_avilable = is_avilable;
+        this.od = od;
     }
 
     save() {
-        return db.execute('INSERT INTO coils (created_at, company, brand_no, status, weight, thickness, width, date, is_avilable) VALUES (?,?,?,?,?,?,?,?,?)',
-            [this.created_at, this.company, this.brand_no, this.status, this.weight, this.thickness, this.width, this.date, this.is_avilable]
+        return db.execute('INSERT INTO coils (created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+            [this.created_at, this.updated_at, this.company, this.brand_no, this.status, this.weight, this.formulated_weight, this.thickness, this.width, this.date, this.is_avilable, this.od]
         )
+    }
+
+    static delete(id) {
+        return db.execute(`UPDATE coils SET is_avilable = false where id = ${id}`)
+    }
+
+    static update(data) {
+        console.log("dataaaa", data)
+        return db.execute(`UPDATE coils SET updated_at = "${data.updated_at}", company = "${data.company}", brand_no = "${data.brand_no}", weight = ${data.weight}, formulated_weight = ${data.formulated_weight}, thickness = ${data.thickness}, width =${data.width}, date = "${data.date}", od = ${data.od} WHERE id = ${data.id}`)
+    }
+
+    static previewSlits(id) {
+        console.log(id, "id", typeof(id))
+        return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.date
+        FROM slittedCoils s
+        LEFT JOIN coils c
+        ON s.parent_id = c.id where c.id = ${id}`)
     }
 
     static getCoilsCount(query) {
@@ -25,7 +45,7 @@ module.exports = class Coil {
         if(query.brand_no) whereQuery = `${whereQuery} and brand_no = "${query.brand_no}"`
         if(query.status) whereQuery = `${whereQuery} and status = "${query.status}"`
         if(query.company) whereQuery = `${whereQuery} and company = "${query.company}"`
-        if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}"` 
+        if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}" and date < "${query.date} 23:59:59"` 
         return db.execute(`SELECT COUNT(*) FROM coils WHERE ${whereQuery}`)
     }
 
@@ -34,7 +54,7 @@ module.exports = class Coil {
         if(query.brand_no) whereQuery = `${whereQuery} and brand_no = "${query.brand_no}"`
         if(query.status) whereQuery = `${whereQuery} and status = "${query.status}"`
         if(query.company) whereQuery = `${whereQuery} and company = "${query.company}"`
-        if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}"` 
+        if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}" and date < "${query.date} 23:59:59"` 
         
         let orderQuery = ''
         if(query.sortBy && query.orderBy) orderQuery = `ORDER BY ${query.sortBy} ${query.orderBy}`

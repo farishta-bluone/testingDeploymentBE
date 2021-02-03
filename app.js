@@ -9,9 +9,10 @@ const bodyParser = require("body-parser");
 
 const cors = require('cors')
 
-const listRoutes = require("./routes/list");
+const coilRoutes = require("./routes/coil");
 
-const addRoutes = require("./routes/add");
+const slittedCoilRoutes = require("./routes/slittedCoil");
+
 
 // if (NODE_ENV !== 'production') {
 //     app.use(cors())
@@ -26,10 +27,13 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json()); //And so on.     // add above all middlewares
 app.use(cors());
 
+app.use('/coil', coilRoutes);
 
-app.use('/list', listRoutes);
+app.use('/slittedCoil', slittedCoilRoutes);
 
-app.use('/add', addRoutes);
+// app.use('/list', listRoutes);
+
+// app.use('/add', addRoutes);
 
 app.get('/', (req, res, next) => {
     res.send("<h1>VM BE App</h1")

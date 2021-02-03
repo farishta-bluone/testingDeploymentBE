@@ -1,7 +1,6 @@
 const Coil = require('../models/coil');
 
 exports.getCoils = (req, res, next) => {
-    console.log(req.body, req.params, req.query)
   Coil.fetchAll(req.query)
     .then(([rows]) => {
         Coil.getCoilsCount(req.query).then(([count]) => {
@@ -13,13 +12,13 @@ exports.getCoils = (req, res, next) => {
 };
 
 exports.postAddCoil = (req, res, next) => {
-    
     let data = req.body;
     data.is_avilable = true;
     data.status = "avilable"
+    data.updated_at = data.created_at // for newly added coil
     // res.send("success")
-    const {created_at, company, brand_no, status, weight, thickness, width, date, is_avilable} = req.body
-    const coil = new Coil(null, created_at, company, brand_no, status, weight, thickness, width, date, is_avilable)
+    const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od} = req.body
+    const coil = new Coil(null, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od)
     coil.save()
     .then(() => {
         res.send("successfuuly added")
@@ -27,16 +26,29 @@ exports.postAddCoil = (req, res, next) => {
     .catch(err => console.log(err));
   };
 
-// exports.getProduct = (req, res, next) => {
-//   const prodId = req.params.productId;
-//   Product.findById(prodId, product => {
-//     res.render('shop/product-detail', {
-//       product: product,
-//       pageTitle: product.title,
-//       path: '/products'
-//     });
-//   });
-// };
+  exports.updateCoil = (req, res, next) => {
+    let data = req.body;
+    data.id = parseInt(req.params.id)
+    Coil.update(data)
+    .then(() => {
+        res.send("updated Successfully")
+    })
+    .catch(err => console.log(err));
+  };
+
+exports.deleteCoil = (req, res, next) => {
+    console.log("req.body", req.body, req.query, req.params)
+    Coil.delete(parseInt(req.params.id)).then(() => {
+        res.send("successfully deleted")
+    }).catch(err => console.log(err));
+};
+
+exports.getSlits = (req, res, next) => {
+    console.log("req.body", req.body, req.query, req.params)
+    Coil.previewSlits(parseInt(req.params.id)).then(([rows]) => {
+        res.send({rows: rows})
+    }).catch(err => console.log(err));
+};
 
 // exports.getIndex = (req, res, next) => {
 //   Product.fetchAll()
@@ -92,21 +104,3 @@ exports.postAddCoil = (req, res, next) => {
 //     pageTitle: 'Checkout'
 //   });
 // };
-
-
-
-
-// const db = require("../util/database");
-
-// exports.getCoils = (req, res, next) => {
-//     console.log("check thisss");
-//     db.execute('SELECT * FROM coils')
-//     .then(result => {
-//         res.send({rows: result[0]});
-//         console.log("result", result[0])
-//     })
-//     .catch(err => {
-//         console.log(err);
-//     });
-    
-// }
