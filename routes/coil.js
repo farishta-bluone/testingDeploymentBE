@@ -12,6 +12,10 @@ router.delete('/:id', coilsController.deleteCoil)
 
 router.put('/:id', coilsController.updateCoil)
 
+router.post('/:id/slits', coilsController.postAddSlits)
+
 router.get('/:id/slits', coilsController.getSlits)
+
+
 
 module.exports = router;

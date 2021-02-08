@@ -1,11 +1,10 @@
 const db = require('../util/database');
 
 module.exports = class SlittedCoil {
-    constructor(id, created_at, updated_at, od, parent_id, slitted_weight, slitted_width, status, is_avilable) {
+    constructor(id, created_at, updated_at, parent_id, slitted_weight, slitted_width, status, is_avilable) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
-        this.od = od;
         this.parent_id = parent_id;
         this.slitted_weight = slitted_weight;
         this.slitted_width = slitted_width;
@@ -13,11 +12,12 @@ module.exports = class SlittedCoil {
         this.is_avilable = is_avilable;
     }
 
-    // save() {
-    //     return db.execute('INSERT INTO coils (created_at, company, brand_no, status, weight, thickness, width, date, is_avilable) VALUES (?,?,?,?,?,?,?,?,?)',
-    //         [this.created_at, this.company, this.brand_no, this.status, this.weight, this.thickness, this.width, this.date, this.is_avilable]
-    //     )
-    // }
+    save() {
+        console.log("Calllledddddd")
+        return db.execute('INSERT INTO slittedCoils (created_at, updated_at, parent_id, slitted_weight, slitted_width, status, is_avilable) VALUES (?,?,?,?,?,?,?)',
+            [this.created_at, this.updated_at, this.parent_id, this.slitted_weight, this.slitted_width, this.status, this.is_avilable]
+        )
+    }
 
     // static delete(id) {
     //     return db.execute(`UPDATE coils SET is_avilable = false where id = ${id}`)

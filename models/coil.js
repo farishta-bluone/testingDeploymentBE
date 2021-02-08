@@ -29,7 +29,19 @@ module.exports = class Coil {
 
     static update(data) {
         console.log("dataaaa", data)
-        return db.execute(`UPDATE coils SET updated_at = "${data.updated_at}", company = "${data.company}", brand_no = "${data.brand_no}", weight = ${data.weight}, formulated_weight = ${data.formulated_weight}, thickness = ${data.thickness}, width =${data.width}, date = "${data.date}", od = ${data.od} WHERE id = ${data.id}`)
+        let query = "";
+        if(data.updated_at) query = `updated_at = "${data.updated_at}",`
+        if(data.company) query = `${query} company = "${data.company}",`
+        if(data.brand_no) query = `${query} brand_no = "${data.brand_no}",`
+        if(data.weight) query = `${query} weight = ${data.weight},`
+        if(data.formulated_weight) query = `${query} formulated_weight = ${data.formulated_weight},`
+        if(data.od) query = `${query} od = ${data.od},`
+        if(data.thickness) query = `${query}  thickness = ${data.thickness},`
+        if(data.date) query = `${query} date = "${data.date}",`
+        if(data.slit_date) query = `${query} slit_date = "${data.slit_date}",`
+        if(data.status) query = `${query} status = "${data.status}"`
+        console.log("query",query)
+        return db.execute(`UPDATE coils SET ${query} WHERE id = ${data.id}`)
     }
 
     static previewSlits(id) {
