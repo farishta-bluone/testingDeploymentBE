@@ -16,7 +16,7 @@ exports.getCoils = (req, res, next) => {
 exports.postAddCoil = (req, res, next) => {
     let data = req.body;
     data.is_avilable = true;
-    data.status = "avilable"
+    data.status = "available"
     data.updated_at = data.created_at // for newly added coil
     // res.send("success")
     const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od} = req.body
@@ -52,7 +52,24 @@ exports.getSlits = (req, res, next) => {
     }).catch(err => console.log(err));
 };
 
-exports.postAddSlits = (req, res, next) => {
+exports.postAddSlits = async (req, res, next) => {
+    let data = req.body;
+    let coilData = {slit_date: data.slit_date, status: "in-queue"};
+    coilData.id = parseInt(req.params.id)
+    await Coil.update(coilData)
+    for(let i=0; i<data.slittedItems.length; i++) {
+        let coil = data.slittedItems[i]
+        console.log("coil", coil)
+        const slitted_coil = new SlittedCoil(null, coil.created_at, coil.updated_at, coil.parent_id, coil.slitted_width, coil.slitted_weight, coil.status, coil.is_avilable)
+        await slitted_coil.save()
+    }
+    Coil.getSingleCoil(parseInt(req.params.id)).then(([data]) => {
+        // console.log(result[0])
+        res.send(data)
+    }).catch(err => console.log(err));
+  };
+
+exports.updateSlits = async (req, res, next) => {
     let data = req.body;
     // let slittedCoils = data.slittedItems; 
     // res.send("heyy")
@@ -60,33 +77,25 @@ exports.postAddSlits = (req, res, next) => {
 
 
 
-    let coilData = {slit_date: data.slit_date, status: "in-queue"};
+    let coilData = {slit_date: data.slit_date, status: "in-queue", updated_at: data.slittedItems[0].updated_at};
     coilData.id = parseInt(req.params.id)
-    Coil.update(coilData)
-    .then(() => {
-        for(let i=0; i<data.slittedItems.length; i++) {
-            let coil = data.slittedItems[i]
-            // coil.parent_id = coilData.id
-            // console.log("coil checkk", coil)
-            // const {created_at,updated_at, status, , formulated_weight, thickness, width, date, is_avilable, od} = req.body
-        const slitted_coil = new SlittedCoil(null, coil.created_at, coil.updated_at, coil.parent_id, coil.slitted_width, coil.slitted_weight, coil.status, coil.is_avilable)
-        slitted_coil.save()
-        .then(() => {
-            // res.send("successfuuly added")
-        })
-        .catch(err => console.log(err));
+    await Coil.update(coilData)
+    for(let i=0; i<data.slittedItems.length; i++) {
+        let coil = data.slittedItems[i]
+        console.log("coil", coil)
+        if(coil.ID) {
+            await SlittedCoil.update({id: coil.ID, updated_at: coil.updated_at, slitted_width: coil.slitted_width, slitted_weight: coil.slitted_weight, status: coil.status})
         }
-        res.send("updated Successfully")
-    })
-    .catch(err => console.log(err));
-    
-    // data.updated_at = data.created_at // for newly added coil
-    // res.send("success")
-    // const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od} = req.body
-    // const coil = new Coil(null, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od)
-    // coil.save()
-    // .then(() => {
-    //     res.send("successfuuly added")
-    // })
-    // .catch(err => console.log(err));
+        else {
+            const slitted_coil = new SlittedCoil(null, coil.created_at, coil.updated_at, coil.parent_id, coil.slitted_width, coil.slitted_weight, coil.status, coil.is_avilable)
+            await slitted_coil.save()
+        }
+    }
+        for(let i=0; i<data.deletedItems.length; i++) {
+            let coil = data.deletedItems[i]
+            console.log("coil", coil)
+            await SlittedCoil.delete(coil.ID)
+            
+        }
+        return res.json({ success: true });
   };

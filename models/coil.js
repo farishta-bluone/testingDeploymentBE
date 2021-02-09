@@ -27,6 +27,10 @@ module.exports = class Coil {
         return db.execute(`UPDATE coils SET is_avilable = false where id = ${id}`)
     }
 
+    static getSingleCoil (id) {
+        return db.execute(`SELECT * from coils where id = ${id}`)
+    }
+
     static update(data) {
         console.log("dataaaa", data)
         let query = "";
@@ -46,7 +50,7 @@ module.exports = class Coil {
 
     static previewSlits(id) {
         console.log(id, "id", typeof(id))
-        return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.date
+        return db.execute(`SELECT s.*, c.brand_no, c.company, c.od, c.formulated_weight, c.slit_date, c.thickness, c.weight, c.width, c.date
         FROM slittedCoils s
         LEFT JOIN coils c
         ON s.parent_id = c.id where c.id = ${id}`)
@@ -74,7 +78,6 @@ module.exports = class Coil {
 
         if(query.limit && query.page) orderQuery = `${orderQuery} LIMIT ${query.limit} OFFSET ${(parseInt(query.page) - 1) * parseInt(query.limit)}`
         else orderQuery = `${orderQuery} LIMIT 10`
-
         return db.execute(`SELECT * FROM coils WHERE ${whereQuery} ${orderQuery}`);
     }
 };

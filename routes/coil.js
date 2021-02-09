@@ -16,6 +16,8 @@ router.post('/:id/slits', coilsController.postAddSlits)
 
 router.get('/:id/slits', coilsController.getSlits)
 
+router.put('/:id/slits', coilsController.updateSlits)
+
 
 
 module.exports = router;
