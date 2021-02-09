@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.21, for macos10.15 (x86_64)
 --
--- Host: localhost    Database: VM
+-- Host: localhost    Database: vanser
 -- ------------------------------------------------------
--- Server version	8.0.21
+-- Server version	8.0.23-0ubuntu0.20.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -39,7 +39,22 @@ CREATE TABLE `coils` (
   `slit_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `companies`
+--
+
+DROP TABLE IF EXISTS `companies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `companies` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(2555) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,15 +74,15 @@ CREATE TABLE `slittedCoils` (
   `status` varchar(255) DEFAULT 'slitted',
   `is_avilable` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping events for database 'VM'
+-- Dumping events for database 'vanser'
 --
 
 --
--- Dumping routines for database 'VM'
+-- Dumping routines for database 'vanser'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -79,4 +94,4 @@ CREATE TABLE `slittedCoils` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-02-08 12:05:34
+-- Dump completed on 2021-02-09 19:44:47
