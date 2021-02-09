@@ -13,6 +13,7 @@ const coilRoutes = require("./routes/coil");
 
 const slittedCoilRoutes = require("./routes/slittedCoil");
 
+const companyRoutes = require("./routes/company");
 
 // if (NODE_ENV !== 'production') {
 //     app.use(cors())
@@ -30,6 +31,8 @@ app.use(cors());
 app.use('/coil', coilRoutes);
 
 app.use('/slittedCoil', slittedCoilRoutes);
+
+app.use('/companies', companyRoutes);
 
 // app.use('/list', listRoutes);
 
