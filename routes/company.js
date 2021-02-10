@@ -8,6 +8,8 @@ router.get('/', companiesController.getCompanies)
 
 router.post('/', companiesController.postAddCompany)
 
-// router.delete('/:id', coilsController.deleteCoil)
+router.put('/:id', companiesController.updateCompany)
+
+router.delete('/:id', companiesController.deleteCompany)
 
 module.exports = router;

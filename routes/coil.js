@@ -4,7 +4,7 @@ const router = express.Router();
 
 const coilsController = require("../controllers/coils");
 
-router.get('/list', coilsController.getCoils)
+router.get('/', coilsController.getCoils)
 
 router.post('/', coilsController.postAddCoil)
 

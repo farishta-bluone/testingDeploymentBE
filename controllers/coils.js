@@ -19,8 +19,8 @@ exports.postAddCoil = (req, res, next) => {
     data.status = "available"
     data.updated_at = data.created_at // for newly added coil
     // res.send("success")
-    const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od} = req.body
-    const coil = new Coil(null, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, od)
+    const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, shift} = req.body
+    const coil = new Coil(null, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, shift)
     coil.save()
     .then(() => {
         res.send("successfuuly added")
@@ -54,7 +54,7 @@ exports.getSlits = (req, res, next) => {
 
 exports.postAddSlits = async (req, res, next) => {
     let data = req.body;
-    let coilData = {slit_date: data.slit_date, status: "in-queue"};
+    let coilData = {slit_date: data.slit_date, status: "in-queue", slit_shift: data.slit_shift};
     coilData.id = parseInt(req.params.id)
     await Coil.update(coilData)
     for(let i=0; i<data.slittedItems.length; i++) {
@@ -77,7 +77,7 @@ exports.updateSlits = async (req, res, next) => {
 
 
 
-    let coilData = {slit_date: data.slit_date, status: "in-queue", updated_at: data.slittedItems[0].updated_at};
+    let coilData = {slit_date: data.slit_date, slit_shift: data.slit_shift, status: "in-queue", updated_at: data.slittedItems[0].updated_at};
     coilData.id = parseInt(req.params.id)
     await Coil.update(coilData)
     for(let i=0; i<data.slittedItems.length; i++) {

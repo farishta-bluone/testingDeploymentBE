@@ -15,6 +15,8 @@ const slittedCoilRoutes = require("./routes/slittedCoil");
 
 const companyRoutes = require("./routes/company");
 
+const shiftRoutes = require("./routes/shift");
+
 // if (NODE_ENV !== 'production') {
 //     app.use(cors())
 //  }
@@ -28,13 +30,13 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json()); //And so on.     // add above all middlewares
 app.use(cors());
 
-app.use('/coil', coilRoutes);
+app.use('/coils', coilRoutes);
 
-app.use('/slittedCoil', slittedCoilRoutes);
+app.use('/slitted-coils', slittedCoilRoutes);
 
 app.use('/companies', companyRoutes);
 
-// app.use('/list', listRoutes);
+app.use('/shifts', shiftRoutes);
 
 // app.use('/add', addRoutes);
 

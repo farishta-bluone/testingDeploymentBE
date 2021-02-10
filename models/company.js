@@ -14,4 +14,12 @@ module.exports = class Company {
     static fetchAll() {
         return db.execute(`SELECT * FROM companies`);
     }
+    static update(data) {
+        let query = "";
+        if(data.name) query = `${query} name = "${data.name}"`
+        return db.execute(`UPDATE companies SET ${query} WHERE id = ${data.id}`)
+    }
+    static delete(id) {
+        return db.execute(`DELETE from companies where id = ${id}`)
+    }
 };
