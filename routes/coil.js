@@ -18,6 +18,8 @@ router.get('/:id/slits', coilsController.getSlits)
 
 router.put('/:id/slits', coilsController.updateSlits)
 
+router.delete('/:id/slits', coilsController.deleteSlits)
+
 
 
 module.exports = router;

@@ -64,6 +64,7 @@ module.exports = class Coil {
         if(query.company) whereQuery = `${whereQuery} and company = "${query.company}"`
         if(query.thickness) whereQuery = `${whereQuery} and thickness = ${query.thickness}`
         if(query.shift) whereQuery = `${whereQuery} and shift = ${query.shift}`
+        if(query.slit_shift) whereQuery = `${whereQuery} and slit_shift = ${query.slit_shift}`
         if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}" and date < "${query.date} 23:59:59"` 
         return db.execute(`SELECT COUNT(*) FROM coils WHERE ${whereQuery}`)
     }
@@ -75,6 +76,7 @@ module.exports = class Coil {
         if(query.company) whereQuery = `${whereQuery} and company = "${query.company}"`
         if(query.thickness) whereQuery = `${whereQuery} and thickness = ${query.thickness}`
         if(query.shift) whereQuery = `${whereQuery} and shift = ${query.shift}`
+        if(query.slit_shift) whereQuery = `${whereQuery} and slit_shift = ${query.slit_shift}`
         if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}" and date < "${query.date} 23:59:59"` 
         
         let orderQuery = ''
