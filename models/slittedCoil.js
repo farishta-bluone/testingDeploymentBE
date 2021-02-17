@@ -34,7 +34,7 @@ module.exports = class SlittedCoil {
         if(data.updated_at) query = `updated_at = "${data.updated_at}",`
         if(data.slitted_weight) query = `${query} slitted_weight = ${data.slitted_weight},`
         if(data.slitted_width) query = `${query}  slitted_width = ${data.slitted_width},`
-        if(data.slit_no) query = `${query}  slit_no = ${data.slit_no},`
+        if(data.slit_no) query = `${query}  slit_no = "${data.slit_no}",`
         if(data.status) query = `${query} status = "${data.status}"`
         return db.execute(`UPDATE slittedCoils SET ${query} WHERE id = ${data.id}`)
     }
