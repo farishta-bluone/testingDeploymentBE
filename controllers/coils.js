@@ -54,7 +54,7 @@ exports.getSlits = (req, res, next) => {
 
 exports.postAddSlits = async (req, res, next) => {
     let data = req.body;
-    let coilData = {slit_date: data.slit_date, status: "in-queue", slit_shift: data.slit_shift};
+    let coilData = {slit_date: data.slit_date, status: "in-queue", slit_shift: data.slit_shift, updated_at: data.slittedItems[0].updated_at};
     coilData.id = parseInt(req.params.id)
     await Coil.update(coilData)
     for(let i=0; i<data.slittedItems.length; i++) {
@@ -71,6 +71,9 @@ exports.postAddSlits = async (req, res, next) => {
 exports.updateSlits = async (req, res, next) => {
     let data = req.body;
     let coilData = {}
+    if(data.updated_at) coilData.updated_at = data.updated_at
+    else coilData.updated_at = data.slittedItems[0].updated_at
+
     if(data.slit_date) coilData.slit_date = data.slit_date;
     if(data.slit_shift) coilData.slit_shift = data.slit_shift;
     if(data.status) coilData.status = data.status;
@@ -79,7 +82,6 @@ exports.updateSlits = async (req, res, next) => {
 
     // let coilData = {slit_date: data.slit_date, slit_shift: data.slit_shift, status: "in-queue", updated_at: data.slittedItems[0].updated_at};
     coilData.id = parseInt(req.params.id)
-    console.log(coilData,"coilData")
     await Coil.update(coilData)
     for(let i=0; i<data.slittedItems.length; i++) {
         let coil = data.slittedItems[i]
@@ -108,10 +110,10 @@ exports.updateSlits = async (req, res, next) => {
   };
 
   exports.deleteSlits = async (req, res, next) => {
-    console.log("req.body", req.body, req.query, req.params)
     let coilData = {}
     let data = req.query;
     coilData.status = 'available';
+    if(data.updated_at) coilData.updated_at = data.updated_at
     coilData.id = parseInt(req.params.id)
     await Coil.update(coilData)
     await SlittedCoil.deleteSlits(req.query.ids).then(() => {
