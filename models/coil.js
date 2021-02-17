@@ -24,6 +24,7 @@ module.exports = class Coil {
     }
 
     static delete(id) {
+        // return db.execute(`DELETE FROM coils WHERE id = ${id}`)
         return db.execute(`UPDATE coils SET is_avilable = false where id = ${id}`)
     }
 
@@ -38,6 +39,7 @@ module.exports = class Coil {
         if(data.company) query = `${query} company = ${data.company},`
         if(data.brand_no) query = `${query} brand_no = "${data.brand_no}",`
         if(data.weight) query = `${query} weight = ${data.weight},`
+        if(data.width) query = `${query} width = ${data.width},`
         if(data.formulated_weight) query = `${query} formulated_weight = ${data.formulated_weight},`
         if(data.shift) query = `${query} shift = ${data.shift},`
         if(data.thickness) query = `${query}  thickness = ${data.thickness},`
@@ -81,7 +83,7 @@ module.exports = class Coil {
         
         let orderQuery = ''
         if(query.sortBy && query.orderBy) orderQuery = `ORDER BY ${query.sortBy} ${query.orderBy}`
-        else orderQuery = `ORDER BY created_at desc`
+        else orderQuery = `ORDER BY updated_at desc`
 
         if(query.limit && query.page) orderQuery = `${orderQuery} LIMIT ${query.limit} OFFSET ${(parseInt(query.page) - 1) * parseInt(query.limit)}`
         else orderQuery = `${orderQuery} LIMIT 10`
