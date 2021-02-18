@@ -32,7 +32,7 @@ app.use(cors());
 
 app.use('/coils', coilRoutes);
 
-app.use('/slitted-coils', slittedCoilRoutes);
+app.use('/slits', slittedCoilRoutes);
 
 app.use('/companies', companyRoutes);
 

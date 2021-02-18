@@ -19,9 +19,12 @@ module.exports = class SlittedCoil {
         )
     }
     static fetchAll(query) {
-        let whereQuery = 's.status = "in-queue"'
+        let whereQuery = "";
+        if(query.status) whereQuery = `s.status = "${query.status}"`
+        else whereQuery = 's.status = "in-queue"'
+        
         if(query.slit_date) whereQuery = `${whereQuery} and c.slit_date >= "${query.slit_date}" and c.slit_date < "${query.slit_date} 23:59:59"` 
-        // if(query.slit_date) whereQuery = `${whereQuery} and slit_date >= "${query.slit_date}" and slit_date < "${query.slit_date} 23:59:59"` 
+        if(query.thickness) whereQuery = `${whereQuery} and c.thickness  = ${query.thickness}` 
         if(query.slit_shift) whereQuery = `${whereQuery} and c.slit_shift = ${query.slit_shift}`
         return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.formulated_weight, c.date, c.slit_shift, c.slit_date 
         FROM slittedCoils s
