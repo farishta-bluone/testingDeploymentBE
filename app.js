@@ -17,6 +17,8 @@ const companyRoutes = require("./routes/company");
 
 const shiftRoutes = require("./routes/shift");
 
+const thicknessRoutes = require("./routes/thickness");
+
 // if (NODE_ENV !== 'production') {
 //     app.use(cors())
 //  }
@@ -38,7 +40,7 @@ app.use('/companies', companyRoutes);
 
 app.use('/shifts', shiftRoutes);
 
-// app.use('/add', addRoutes);
+app.use('/thicknesses', thicknessRoutes);
 
 app.get('/', (req, res, next) => {
     res.send("<h1>VM BE App</h1")
