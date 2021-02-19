@@ -29,7 +29,7 @@ module.exports = class SlittedCoil {
         return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.formulated_weight, c.date, c.slit_shift, c.slit_date 
         FROM slittedCoils s
         LEFT JOIN coils c
-        ON s.parent_id = c.id WHERE ${whereQuery}`);
+        ON s.parent_id = c.id WHERE ${whereQuery} ORDER BY s.updated_at desc`);
     }
 
     static update(data) {
