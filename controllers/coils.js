@@ -19,8 +19,8 @@ exports.postAddCoil = (req, res, next) => {
     data.status = "available"
     data.updated_at = data.created_at // for newly added coil
     // res.send("success")
-    const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, shift} = req.body
-    const coil = new Coil(null, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, shift)
+    const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable} = req.body
+    const coil = new Coil(null, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable)
     coil.save()
     .then(() => {
         res.send("successfuuly added")
