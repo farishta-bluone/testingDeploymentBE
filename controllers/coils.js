@@ -16,7 +16,7 @@ exports.getCoils = (req, res, next) => {
 exports.postAddCoil = (req, res, next) => {
     let data = req.body;
     data.is_avilable = true;
-    data.status = "available"
+    data.status = data.status ? data.status : "available";
     data.updated_at = data.created_at // for newly added coil
     // res.send("success")
     const {created_at,updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable} = req.body
