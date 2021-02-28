@@ -20,7 +20,17 @@ module.exports = class SlittedCoil {
     }
     static fetchAll(query) {
         let whereQuery = "";
-        if(query.status) whereQuery = `s.status = "${query.status}"`
+        if (query.status) {
+            let tempStatus = (query.status).toString().split(",");
+            if(tempStatus.length > 0) {
+                for (let i = 0; i< tempStatus.length; i++) {
+                    whereQuery = `${whereQuery} s.status = "${tempStatus[i]}"`
+                    if(i != (tempStatus.length-1)) whereQuery = `${whereQuery} OR` 
+                } 
+            }
+            else whereQuery = `s.status = "${query.status}"`
+        }
+        
         else whereQuery = 's.status = "in-queue"'
         
         if(query.slit_date) whereQuery = `${whereQuery} and c.slit_date >= "${query.slit_date}" and c.slit_date < "${query.slit_date} 23:59:59"` 
@@ -37,6 +47,8 @@ module.exports = class SlittedCoil {
         if(data.updated_at) query = `updated_at = "${data.updated_at}",`
         if(data.slitted_weight) query = `${query} slitted_weight = ${data.slitted_weight},`
         if(data.slitted_width) query = `${query}  slitted_width = ${data.slitted_width},`
+        if(data.actual_weight) query = `${query} actual_weight = ${data.actual_weight},`
+        if(data.actual_width) query = `${query}  actual_width = ${data.actual_width},`
         if(data.slit_no) query = `${query}  slit_no = "${data.slit_no}",`
         if(data.status) query = `${query} status = "${data.status}"`
         return db.execute(`UPDATE slittedCoils SET ${query} WHERE id = ${data.id}`)

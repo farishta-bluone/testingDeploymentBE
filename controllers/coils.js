@@ -89,6 +89,8 @@ exports.updateSlits = async (req, res, next) => {
             let _data = {id: coil.ID}
             if(coil.slitted_width) _data.slitted_width = coil.slitted_width
             if(coil.slitted_weight) _data.slitted_weight = coil.slitted_weight
+            if(coil.actual_width) _data.actual_width = coil.actual_width
+            if(coil.actual_weight) _data.actual_weight = coil.actual_weight
             if(coil.status) _data.status = coil.status
             if(coil.slit_no) _data.slit_no = coil.slit_no
             await SlittedCoil.update(_data)
