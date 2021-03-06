@@ -19,14 +19,27 @@ module.exports = class SlittedCoil {
         )
     }
     static fetchAll(query) {
-        let whereQuery = 's.status = "in-queue"'
+        let whereQuery = "";
+        if (query.status) {
+            let tempStatus = (query.status).toString().split(",");
+            if(tempStatus.length > 0) {
+                for (let i = 0; i< tempStatus.length; i++) {
+                    whereQuery = `${whereQuery} s.status = "${tempStatus[i]}"`
+                    if(i != (tempStatus.length-1)) whereQuery = `${whereQuery} OR` 
+                } 
+            }
+            else whereQuery = `s.status = "${query.status}"`
+        }
+        
+        else whereQuery = 's.status = "in-queue"'
+        
         if(query.slit_date) whereQuery = `${whereQuery} and c.slit_date >= "${query.slit_date}" and c.slit_date < "${query.slit_date} 23:59:59"` 
-        // if(query.slit_date) whereQuery = `${whereQuery} and slit_date >= "${query.slit_date}" and slit_date < "${query.slit_date} 23:59:59"` 
+        if(query.thickness) whereQuery = `${whereQuery} and c.thickness  = ${query.thickness}` 
         if(query.slit_shift) whereQuery = `${whereQuery} and c.slit_shift = ${query.slit_shift}`
         return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.formulated_weight, c.date, c.slit_shift, c.slit_date 
         FROM slittedCoils s
         LEFT JOIN coils c
-        ON s.parent_id = c.id WHERE ${whereQuery}`);
+        ON s.parent_id = c.id WHERE ${whereQuery} ORDER BY s.updated_at desc`);
     }
 
     static update(data) {
@@ -34,6 +47,8 @@ module.exports = class SlittedCoil {
         if(data.updated_at) query = `updated_at = "${data.updated_at}",`
         if(data.slitted_weight) query = `${query} slitted_weight = ${data.slitted_weight},`
         if(data.slitted_width) query = `${query}  slitted_width = ${data.slitted_width},`
+        if(data.actual_weight) query = `${query} actual_weight = ${data.actual_weight},`
+        if(data.actual_width) query = `${query}  actual_width = ${data.actual_width},`
         if(data.slit_no) query = `${query}  slit_no = "${data.slit_no}",`
         if(data.status) query = `${query} status = "${data.status}"`
         return db.execute(`UPDATE slittedCoils SET ${query} WHERE id = ${data.id}`)

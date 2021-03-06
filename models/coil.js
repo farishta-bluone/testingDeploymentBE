@@ -1,7 +1,7 @@
 const db = require('../util/database');
 
 module.exports = class Coil {
-    constructor(id, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, shift) {
+    constructor(id, created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -14,12 +14,12 @@ module.exports = class Coil {
         this.width = width;
         this.date = date;
         this.is_avilable = is_avilable;
-        this.shift = shift;
+        // this.shift = shift;
     }
 
     save() {
-        return db.execute('INSERT INTO coils (created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable, shift) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
-            [this.created_at, this.updated_at, this.company, this.brand_no, this.status, this.weight, this.formulated_weight, this.thickness, this.width, this.date, this.is_avilable, this.shift]
+        return db.execute('INSERT INTO coils (created_at, updated_at, company, brand_no, status, weight, formulated_weight, thickness, width, date, is_avilable) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+            [this.created_at, this.updated_at, this.company, this.brand_no, this.status, this.weight, this.formulated_weight, this.thickness, this.width, this.date, this.is_avilable]
         )
     }
 
