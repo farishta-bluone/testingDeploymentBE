@@ -4,7 +4,7 @@ const accessTokenSecret = 'youraccesstokensecret';
 const dotenv = require('dotenv');
 dotenv.config();
 
-const PORT = 5050;
+const PORT = 5000;
 const bodyParser = require("body-parser");
 const jwt = require('jsonwebtoken');
 
@@ -29,8 +29,6 @@ const userRoutes = require("./routes/user");
 //  }
 
 const app = express();
-
-app.set('port',5555);
 
 
 const authenticateJWT = (req, res, next) => {
