@@ -23,9 +23,10 @@ module.exports = class Coil {
         )
     }
 
-    static delete(id) {
+    static delete(ids) {
         // return db.execute(`DELETE FROM coils WHERE id = ${id}`)
-        return db.execute(`UPDATE coils SET is_avilable = false where id = ${id}`)
+        // return db.execute(`DELETE FROM coils WHERE id IN (${id})`);
+        return db.execute(`UPDATE coils SET is_avilable = false where id IN (${ids})`)
     }
 
     static getSingleCoil (id) {
@@ -46,6 +47,7 @@ module.exports = class Coil {
         if(data.date) query = `${query} date = "${data.date}",`
         if(data.slit_date) query = `${query} slit_date = "${data.slit_date}",`
         if(data.slit_shift) query = `${query} slit_shift = ${data.slit_shift},`
+        if(data.notes) query = `${query} notes = "${data.notes}",`
         if(data.status) query = `${query} status = "${data.status}"`
         console.log("query",query)
         return db.execute(`UPDATE coils SET ${query} WHERE id = ${data.id}`)
@@ -53,7 +55,7 @@ module.exports = class Coil {
 
     static previewSlits(id) {
         console.log(id, "id", typeof(id))
-        return db.execute(`SELECT s.*, c.brand_no, c.company, c.formulated_weight, c.slit_date, c.slit_shift, c.thickness, c.weight, c.width, c.date
+        return db.execute(`SELECT s.*, c.brand_no, c.company, c.formulated_weight, c.slit_date, c.slit_shift, c.thickness, c.weight, c.width, c.date, c.notes
         FROM slittedCoils s
         LEFT JOIN coils c
         ON s.parent_id = c.id where c.id = ${id}`)

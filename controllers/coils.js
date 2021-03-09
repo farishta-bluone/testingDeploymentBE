@@ -40,7 +40,7 @@ exports.postAddCoil = (req, res, next) => {
 
 exports.deleteCoil = (req, res, next) => {
     console.log("req.body", req.body, req.query, req.params)
-    Coil.delete(parseInt(req.params.id)).then(() => {
+    Coil.delete(req.params.id).then(() => {
         res.send("successfully deleted")
     }).catch(err => console.log(err));
 };
@@ -56,6 +56,7 @@ exports.postAddSlits = async (req, res, next) => {
     let data = req.body;
     let coilData = {slit_date: data.slit_date, status: "in-queue", slit_shift: data.slit_shift, updated_at: data.slittedItems[0].updated_at};
     coilData.id = parseInt(req.params.id)
+    if(data.notes) coilData.notes = data.notes
     await Coil.update(coilData)
     for(let i=0; i<data.slittedItems.length; i++) {
         let coil = data.slittedItems[i]
@@ -79,6 +80,7 @@ exports.updateSlits = async (req, res, next) => {
     if(data.status) coilData.status = data.status;
     if(data.slit_date) coilData.slit_date = data.slit_date;
     if(data.slit_date) coilData.slit_date = data.slit_date;
+    if(data.notes) coilData.notes = data.notes
 
     // let coilData = {slit_date: data.slit_date, slit_shift: data.slit_shift, status: "in-queue", updated_at: data.slittedItems[0].updated_at};
     coilData.id = parseInt(req.params.id)
