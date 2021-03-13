@@ -1,7 +1,7 @@
 const db = require('../util/database');
 
 module.exports = class SlittedCoil {
-    constructor(id, created_at, updated_at, parent_id, slitted_width, slitted_weight, status, is_avilable) {
+    constructor(id, created_at, updated_at, parent_id, slitted_width, slitted_weight, status, is_avilable, slit_no, actual_width, actual_weight) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -10,12 +10,14 @@ module.exports = class SlittedCoil {
         this.slitted_weight = slitted_weight;
         this.status = status;
         this.is_avilable = is_avilable;
-        // this.slit_no = slit_no;
+        this.slit_no = slit_no;
+        this.actual_width = actual_width
+        this.actual_weight = actual_weight;
     }
 
     save() {
-        return db.execute('INSERT INTO slittedCoils (created_at, updated_at, parent_id, slitted_width, slitted_weight,  status, is_avilable) VALUES (?,?,?,?,?,?,?)',
-            [this.created_at, this.updated_at, this.parent_id,  this.slitted_width, this.slitted_weight,this.status, this.is_avilable]
+        return db.execute('INSERT INTO slittedCoils (created_at, updated_at, parent_id, slitted_width, slitted_weight,  status, is_avilable, slit_no, actual_width, actual_weight) VALUES (?,?,?,?,?,?,?,?,?,?)',
+            [this.created_at, this.updated_at, this.parent_id,  this.slitted_width, this.slitted_weight,this.status, this.is_avilable, this.slit_no, this.actual_width, this.actual_weight]
         )
     }
     static fetchAll(query) {
