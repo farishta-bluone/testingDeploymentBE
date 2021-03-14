@@ -36,12 +36,21 @@ module.exports = class SlittedCoil {
         else whereQuery = 's.status = "in-queue"'
         
         if(query.slit_date) whereQuery = `${whereQuery} and c.slit_date >= "${query.slit_date}" and c.slit_date < "${query.slit_date} 23:59:59"` 
+        if(query.pickling_date) whereQuery = `${whereQuery} and s.pickling_date >= "${query.pickling_date}" and s.pickling_date < "${query.pickling_date} 23:59:59"`
         if(query.thickness) whereQuery = `${whereQuery} and c.thickness  = ${query.thickness}` 
+        if(query.pickled_thickness) whereQuery = `${whereQuery} and s.pickled_thickness  = ${query.pickled_thickness}` 
         if(query.slit_shift) whereQuery = `${whereQuery} and c.slit_shift = ${query.slit_shift}`
         return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.formulated_weight, c.date, c.slit_shift, c.slit_date 
         FROM slittedCoils s
         LEFT JOIN coils c
         ON s.parent_id = c.id WHERE ${whereQuery} ORDER BY s.updated_at desc`);
+    }
+
+    static getSingleSlit (id) {
+        return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.formulated_weight, c.date, c.slit_shift, c.slit_date 
+        FROM slittedCoils s
+        LEFT JOIN coils c
+        ON s.parent_id = c.id WHERE s.ID = ${id}`)
     }
 
     static update(data) {
@@ -52,6 +61,12 @@ module.exports = class SlittedCoil {
         if(data.actual_weight) query = `${query} actual_weight = ${data.actual_weight},`
         if(data.actual_width) query = `${query}  actual_width = ${data.actual_width},`
         if(data.slit_no) query = `${query}  slit_no = "${data.slit_no}",`
+        if(data.pickled_width) query = `${query}  pickled_width = ${data.pickled_width},`
+        if(data.pickled_weight) query = `${query} pickled_weight = ${data.pickled_weight},`
+        if(data.pickled_thickness) query = `${query}  pickled_thickness = ${data.pickled_thickness},`
+        if(data.pickling_date) query = `${query}  pickling_date = "${data.pickling_date}",`
+        if(data.pickling_notes) query = `${query}  pickling_notes = "${data.pickling_notes}",`
+        if(data.pickling_shift) query = `${query}  pickling_shift = ${data.pickling_shift},`
         if(data.status) query = `${query} status = "${data.status}"`
         return db.execute(`UPDATE slittedCoils SET ${query} WHERE id = ${data.id}`)
     }

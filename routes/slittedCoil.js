@@ -6,8 +6,10 @@ const slittedCoilsController = require("../controllers/slittedCoils");
 
 router.get('/', slittedCoilsController.getCoils)
 
+router.put('/', slittedCoilsController.updateSlits)
+
 // router.post('/', coilsController.postAddCoil)
 
-// router.delete('/:id', coilsController.deleteCoil)
+router.get('/:id', slittedCoilsController.getSingleSlit)
 
 module.exports = router;
