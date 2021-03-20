@@ -22,12 +22,14 @@ module.exports = class SlittedCoil {
     }
     static fetchAll(query) {
         let whereQuery = 's.is_avilable = true'
+        if(query.rolling_date) whereQuery = `${whereQuery} and s.rolling_date >= "${query.rolling_date}" and s.rolling_date < "${query.rolling_date} 23:59:59"` 
+        if(query.rolling_thickness) whereQuery = `${whereQuery} and s.rolling_thickness  = ${query.rolling_thickness}` 
         if(query.slit_date) whereQuery = `${whereQuery} and c.slit_date >= "${query.slit_date}" and c.slit_date < "${query.slit_date} 23:59:59"` 
         if(query.pickling_date) whereQuery = `${whereQuery} and s.pickling_date >= "${query.pickling_date}" and s.pickling_date < "${query.pickling_date} 23:59:59"`
         if(query.thickness) whereQuery = `${whereQuery} and c.thickness  = ${query.thickness}` 
         if(query.pickled_thickness) whereQuery = `${whereQuery} and s.pickled_thickness  = ${query.pickled_thickness}` 
         if(query.slit_shift) whereQuery = `${whereQuery} and c.slit_shift = ${query.slit_shift}`
-
+        
         let statusQuery = ""
         if (query.status) {
             let tempStatus = (query.status).toString().split(",");
@@ -41,7 +43,6 @@ module.exports = class SlittedCoil {
         }
         if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
        
-        
         return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.formulated_weight, c.date, c.slit_shift, c.slit_date 
         FROM slittedCoils s
         LEFT JOIN coils c
@@ -71,6 +72,20 @@ module.exports = class SlittedCoil {
         if(data.pickling_operator) query = `${query}  pickling_operator = "${data.pickling_operator}",`
         if(data.pickling_notes) query = `${query}  pickling_notes = "${data.pickling_notes}",`
         if(data.pickling_shift) query = `${query}  pickling_shift = ${data.pickling_shift},`
+
+        if(data.rolling_date) query = `${query} rolling_date = "${data.rolling_date}",`
+        if(data.rolling_shift) query = `${query}  rolling_shift = ${data.rolling_shift},`
+        if(data.rolling_thickness) query = `${query}  rolling_thickness = ${data.rolling_thickness},`
+        if(data.rolling_passes) query = `${query}  rolling_passes = ${data.rolling_passes},`
+        if(data.feedback_mode) query = `${query} feedback_mode = ${data.feedback_mode},`
+        if(data.massflow_mode) query = `${query}  massflow_mode = ${data.massflow_mode},`
+        if(data.rewinding) query = `${query}  rewinding = ${data.rewinding},`
+        if(data.rolled_weight) query = `${query}  rolled_weight = ${data.rolled_weight},`
+        if(data.leader_end) query = `${query}  leader_end = "${data.leader_end}",`
+        if(data.gauge_control) query = `${query}  gauge_control = "${data.gauge_control}",`
+        if(data.surface_wavy) query = `${query}  surface_wavy = ${data.surface_wavy},`
+        if(data.rolling_operator) query = `${query} rolling_operator = "${data.rolling_operator}",`
+        if(data.rolling_notes) query = `${query} rolling_notes = "${data.rolling_notes}",`
         if(data.status) query = `${query} status = "${data.status}"`
         return db.execute(`UPDATE slittedCoils SET ${query} WHERE id = ${data.id}`)
     }
