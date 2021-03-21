@@ -57,7 +57,7 @@ app.use(cors());
 
 
 
-app.use('/coils', authenticateJWT, coilRoutes);
+app.use('/coils', coilRoutes);
 
 app.use('/slits', authenticateJWT, slittedCoilRoutes);
 

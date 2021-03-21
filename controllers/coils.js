@@ -132,3 +132,36 @@ exports.updateSlits = async (req, res, next) => {
         res.send("successfully deleted")
     }).catch(err => console.log(err));
 };
+
+// will remove it
+exports.dummyFetch = async (req, res, next) => {
+    let rows = await Coil.fetchAll(req.query);
+          let parents = rows[0];
+          let slits = await SlittedCoil.fetchWithoutJoint();
+            for(let slit of slits[0]) {
+                  let parent = parents.filter(item => item.id === slit.parent_id )
+                  if(parent.length > 0) {
+                    let c = parent[0]
+                    slit.parent_info = {
+                        id: c.id, 
+                        brand_no: c.brand_no,
+                        weight: c.weight, 
+                        width: c.width, 
+                        date: c.date, 
+                        thickness: c.thickness, 
+                        company: c.company, 
+                        formulated_weight: c.formulated_weight, 
+                        slit_shift: c.slit_shift, //need to update
+                        slit_date: c.slit_date, //need to update
+                        slit_notes: c.notes, //need to update
+                        status: c.status //need to update
+                    };
+                    await SlittedCoil.update({id: slit.ID, parent_info: JSON.stringify(slit.parent_info), status: slit.status }).then(() => {
+                        // console.log("done")
+                    }).catch((error) => {
+                        console.log("not done", error)
+                    })
+                  }
+              };
+              res.send("its done");   
+  };

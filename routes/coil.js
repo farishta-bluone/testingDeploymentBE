@@ -20,6 +20,9 @@ router.put('/:id/slits', coilsController.updateSlits)
 
 router.delete('/:id/slits', coilsController.deleteSlits)
 
+//will remove this soon
+router.get('/dummy', coilsController.dummyFetch)
+
 
 
 module.exports = router;

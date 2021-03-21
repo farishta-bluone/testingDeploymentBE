@@ -58,6 +58,7 @@ module.exports = class SlittedCoil {
 
     static update(data) {
         let query = "";
+        if(data.parent_info) query = `parent_info = '${data.parent_info}',`
         if(data.updated_at) query = `updated_at = "${data.updated_at}",`
         if(data.slitted_weight) query = `${query} slitted_weight = ${data.slitted_weight},`
         if(data.slitted_width) query = `${query}  slitted_width = ${data.slitted_width},`
@@ -97,5 +98,12 @@ module.exports = class SlittedCoil {
     static deleteSlits(ids) {
         console.log("ids ", ids, typeof(ids))
         return db.execute(`DELETE FROM slittedCoils WHERE id IN (${ids})`)
+    }
+
+    static fetchWithoutJoint() {
+        let whereQuery = 'is_avilable = true'
+        return db.execute(`SELECT *
+        FROM slittedCoils
+        WHERE ${whereQuery} ORDER BY updated_at desc`);
     }
 };
