@@ -135,9 +135,9 @@ exports.updateSlits = async (req, res, next) => {
 
 // will remove it
 exports.dummyFetch = async (req, res, next) => {
-    let rows = await Coil.fetchAll(req.query);
+    let rows = await Coil.fetchAll({limit: 1000, page:1});
           let parents = rows[0];
-          let slits = await SlittedCoil.fetchWithoutJoint();
+          let slits = await SlittedCoil.fetchWithoutJoint({limit: 1000, page:1});
             for(let slit of slits[0]) {
                   let parent = parents.filter(item => item.id === slit.parent_id )
                   if(parent.length > 0) {
@@ -150,14 +150,12 @@ exports.dummyFetch = async (req, res, next) => {
                         date: c.date, 
                         thickness: c.thickness, 
                         company: c.company, 
-                        formulated_weight: c.formulated_weight, 
-                        slit_shift: c.slit_shift, //need to update
-                        slit_date: c.slit_date, //need to update
-                        slit_notes: c.notes, //need to update
-                        status: c.status //need to update
+                        formulated_weight: c.formulated_weight
                     };
-                    await SlittedCoil.update({id: slit.ID, parent_info: JSON.stringify(slit.parent_info), status: slit.status }).then(() => {
-                        // console.log("done")
+                    
+                    let slit_date = (c.slit_date.toISOString()).split("T")[0]
+                    await SlittedCoil.update({id: slit.ID, parent_thickness: c.thickness, slit_notes: c.notes, slit_date: slit_date, slit_shift: c.slit_shift,
+                        parent_info: JSON.stringify(slit.parent_info), status: slit.status }).then(() => {
                     }).catch((error) => {
                         console.log("not done", error)
                     })

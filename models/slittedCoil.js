@@ -58,8 +58,14 @@ module.exports = class SlittedCoil {
 
     static update(data) {
         let query = "";
-        if(data.parent_info) query = `parent_info = '${data.parent_info}',`
         if(data.updated_at) query = `updated_at = "${data.updated_at}",`
+
+        if(data.parent_thickness) query = `${query} parent_thickness = ${data.parent_thickness},`
+        if(data.slit_notes) query = `${query} slit_notes = "${data.slit_notes}",`
+        if(data.slit_date) query = `${query} slit_date = "${data.slit_date}",`
+        if(data.slit_shift) query = `${query}  slit_shift = ${data.slit_shift},`
+
+        if(data.parent_info) query = `${query} parent_info = '${data.parent_info}',`
         if(data.slitted_weight) query = `${query} slitted_weight = ${data.slitted_weight},`
         if(data.slitted_width) query = `${query}  slitted_width = ${data.slitted_width},`
         if(data.actual_weight) query = `${query} actual_weight = ${data.actual_weight},`
@@ -100,10 +106,59 @@ module.exports = class SlittedCoil {
         return db.execute(`DELETE FROM slittedCoils WHERE id IN (${ids})`)
     }
 
-    static fetchWithoutJoint() {
+    static fetchWithoutJoint(query) {
+        if(!query) query = {}
         let whereQuery = 'is_avilable = true'
+        if(query.parent_thickness) whereQuery = `${whereQuery} and parent_thickness = ${query.parent_thickness}`
+        if(query.slit_shift) whereQuery = `${whereQuery} and slit_shift = ${query.slit_shift}`
+        if(query.slit_date) whereQuery = `${whereQuery} and slit_date >= "${query.slit_date}" and slit_date < "${query.slit_date} 23:59:59"` 
+        let orderQuery = ''
+        if(query.sortBy && query.orderBy) orderQuery = `ORDER BY ${query.sortBy} ${query.orderBy}`
+        else orderQuery = `ORDER BY updated_at desc`
+
+        if(query.limit && !query.page) query.page = 1;
+        if(!query.limit && query.page) query.limit = 10;
+        if(query.limit && query.page) orderQuery = `${orderQuery} LIMIT ${query.limit} OFFSET ${(parseInt(query.page) - 1) * parseInt(query.limit)}`
+        else orderQuery = `${orderQuery} LIMIT 10`
+
+        let statusQuery = ""
+        if (query.status) {
+            let tempStatus = (query.status).toString().split(",");
+            if(tempStatus.length > 0) {
+                for (let i = 0; i< tempStatus.length; i++) {
+                    statusQuery = `${statusQuery} status = "${tempStatus[i]}"`
+                    if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
+                } 
+            }
+            else statusQuery = `status = "${query.status}"`
+        }
+        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
+    
         return db.execute(`SELECT *
         FROM slittedCoils
-        WHERE ${whereQuery} ORDER BY updated_at desc`);
+        WHERE ${whereQuery} ${orderQuery}`);
+    }
+
+    static getSlitsCount(query) {
+        if(!query) query = {}
+        let whereQuery = 'is_avilable = true'
+        if(query.parent_thickness) whereQuery = `${whereQuery} and parent_thickness = ${query.parent_thickness}`
+        if(query.slit_shift) whereQuery = `${whereQuery} and slit_shift = ${query.slit_shift}`
+        if(query.slit_date) whereQuery = `${whereQuery} and slit_date >= "${query.slit_date}" and slit_date < "${query.slit_date} 23:59:59"` 
+
+        let statusQuery = ""
+        if (query.status) {
+            let tempStatus = (query.status).toString().split(",");
+            if(tempStatus.length > 0) {
+                for (let i = 0; i< tempStatus.length; i++) {
+                    statusQuery = `${statusQuery} status = "${tempStatus[i]}"`
+                    if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
+                } 
+            }
+            else statusQuery = `status = "${query.status}"`
+        }
+        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
+
+        return db.execute(`SELECT COUNT(*) FROM slittedCoils WHERE ${whereQuery}`)
     }
 };

@@ -59,7 +59,7 @@ app.use(cors());
 
 app.use('/coils', coilRoutes);
 
-app.use('/slits', authenticateJWT, slittedCoilRoutes);
+app.use('/slits', slittedCoilRoutes);
 
 app.use('/companies', authenticateJWT, companyRoutes);
 

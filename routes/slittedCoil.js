@@ -8,7 +8,7 @@ router.get('/', slittedCoilsController.getCoils)
 
 router.put('/', slittedCoilsController.updateSlits)
 
-// router.post('/', coilsController.postAddCoil)
+router.get('/list', slittedCoilsController.getSlittedCoils)
 
 router.get('/:id', slittedCoilsController.getSingleSlit)
 

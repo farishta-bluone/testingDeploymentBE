@@ -26,3 +26,11 @@ exports.getSingleSlit = (req, res, next) => {
         res.send({rows: rows})
     }).catch(err => console.log(err));
 };
+
+exports.getSlittedCoils = (req, res, next) => {
+    SlittedCoil.fetchWithoutJoint(req.query).then(([rows]) => {
+        SlittedCoil.getSlitsCount(req.query).then(([count]) => {
+            res.send({rows: rows, count: count[0]['COUNT(*)'] })
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
+};
