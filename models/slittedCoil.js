@@ -39,7 +39,7 @@ module.exports = class SlittedCoil {
                     if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
                 } 
             }
-            else statusQuery = `s.status = "${query.status}"`
+            else statusQuery = `(s.status = "${query.status}")`
         }
         if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
        
@@ -75,7 +75,7 @@ module.exports = class SlittedCoil {
                     if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
                 } 
             }
-            else statusQuery = `s.status = "${query.status}"`
+            else statusQuery = `(s.status = "${query.status}")`
         }
         if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
        
@@ -166,7 +166,7 @@ module.exports = class SlittedCoil {
                     if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
                 } 
             }
-            else statusQuery = `status = "${query.status}"`
+            else statusQuery = `(status = "${query.status}")`
         }
         if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
     
@@ -191,7 +191,7 @@ module.exports = class SlittedCoil {
                     if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
                 } 
             }
-            else statusQuery = `status = "${query.status}"`
+            else statusQuery = `(status = "${query.status}")`
         }
         if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
 
