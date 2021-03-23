@@ -43,10 +43,46 @@ module.exports = class SlittedCoil {
         }
         if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
        
+        let orderQuery = 'ORDER BY s.updated_at desc'
+        // if(query.sortBy && query.orderBy) orderQuery = `ORDER BY ${query.sortBy} ${query.orderBy}`
+        // else orderQuery = `ORDER BY s.updated_at desc`
+
+        if(query.limit && query.page) orderQuery = `${orderQuery} LIMIT ${query.limit} OFFSET ${(parseInt(query.page) - 1) * parseInt(query.limit)}`
+        // else orderQuery = `${orderQuery} LIMIT 10`  //will add this later
+
         return db.execute(`SELECT s.*, c.brand_no, c.company, c.thickness, c.weight, c.width, c.formulated_weight, c.date, c.slit_shift, c.slit_date 
         FROM slittedCoils s
         LEFT JOIN coils c
-        ON s.parent_id = c.id WHERE ${whereQuery} ORDER BY s.updated_at desc`);
+        ON s.parent_id = c.id WHERE ${whereQuery} ${orderQuery}`);
+    }
+
+    static getCount(query) {
+        let whereQuery = 's.is_avilable = true'
+        if(query.rolling_date) whereQuery = `${whereQuery} and s.rolling_date >= "${query.rolling_date}" and s.rolling_date < "${query.rolling_date} 23:59:59"` 
+        if(query.rolling_thickness) whereQuery = `${whereQuery} and s.rolling_thickness  = ${query.rolling_thickness}` 
+        if(query.slit_date) whereQuery = `${whereQuery} and c.slit_date >= "${query.slit_date}" and c.slit_date < "${query.slit_date} 23:59:59"` 
+        if(query.pickling_date) whereQuery = `${whereQuery} and s.pickling_date >= "${query.pickling_date}" and s.pickling_date < "${query.pickling_date} 23:59:59"`
+        if(query.thickness) whereQuery = `${whereQuery} and c.thickness  = ${query.thickness}` 
+        if(query.pickled_thickness) whereQuery = `${whereQuery} and s.pickled_thickness  = ${query.pickled_thickness}` 
+        if(query.slit_shift) whereQuery = `${whereQuery} and c.slit_shift = ${query.slit_shift}`
+        
+        let statusQuery = ""
+        if (query.status) {
+            let tempStatus = (query.status).toString().split(",");
+            if(tempStatus.length > 0) {
+                for (let i = 0; i< tempStatus.length; i++) {
+                    statusQuery = `${statusQuery} s.status = "${tempStatus[i]}"`
+                    if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
+                } 
+            }
+            else statusQuery = `s.status = "${query.status}"`
+        }
+        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
+       
+        return db.execute(`SELECT COUNT(*)
+        FROM slittedCoils s
+        LEFT JOIN coils c
+        ON s.parent_id = c.id WHERE ${whereQuery}`);
     }
 
     static getSingleSlit (id) {

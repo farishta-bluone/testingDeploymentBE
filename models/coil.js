@@ -34,9 +34,9 @@ module.exports = class Coil {
     }
 
     static update(data) {
-        console.log("dataaaa", data)
         let query = "";
         if(data.updated_at) query = `updated_at = "${data.updated_at}",`
+        if(data.slit_info) query = `slit_info = '${data.slit_info}',`
         if(data.company) query = `${query} company = ${data.company},`
         if(data.brand_no) query = `${query} brand_no = "${data.brand_no}",`
         if(data.weight) query = `${query} weight = ${data.weight},`
