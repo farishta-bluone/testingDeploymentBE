@@ -34,3 +34,12 @@ exports.getSlittedCoils = (req, res, next) => {
         }).catch(err => console.log(err));
     }).catch(err => console.log(err));
 };
+
+exports.getAnnealedCoils = (req, res, next) => {
+    if(!req.query.status) req.query.status = "annealed"
+    SlittedCoil.fetchAnnealedCoils(req.query).then(([rows]) => {
+        SlittedCoil.getSlitsCount(req.query).then(([count]) => {
+            res.send({rows: rows, count: count[0]['COUNT(*)'] })
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
+};

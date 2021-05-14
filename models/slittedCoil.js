@@ -33,15 +33,15 @@ module.exports = class SlittedCoil {
         let statusQuery = ""
         if (query.status) {
             let tempStatus = (query.status).toString().split(",");
-            if(tempStatus.length > 0) {
+            if(tempStatus.length > 1) {
                 for (let i = 0; i< tempStatus.length; i++) {
                     statusQuery = `${statusQuery} s.status = "${tempStatus[i]}"`
                     if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
                 } 
             }
-            else statusQuery = `(s.status = "${query.status}")`
+            else statusQuery = `s.status = "${query.status}"`
         }
-        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
+        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND (${statusQuery})`
        
         let orderQuery = 'ORDER BY s.updated_at desc'
         // if(query.sortBy && query.orderBy) orderQuery = `ORDER BY ${query.sortBy} ${query.orderBy}`
@@ -129,6 +129,7 @@ module.exports = class SlittedCoil {
         if(data.surface_wavy) query = `${query}  surface_wavy = ${data.surface_wavy},`
         if(data.rolling_operator) query = `${query} rolling_operator = "${data.rolling_operator}",`
         if(data.rolling_notes) query = `${query} rolling_notes = "${data.rolling_notes}",`
+        if(data.batch_no) query = `${query} batch_no = ${data.batch_no},`
         if(data.status) query = `${query} status = "${data.status}"`
         return db.execute(`UPDATE slittedCoils SET ${query} WHERE id = ${data.id}`)
     }
@@ -196,5 +197,19 @@ module.exports = class SlittedCoil {
         if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
 
         return db.execute(`SELECT COUNT(*) FROM slittedCoils WHERE ${whereQuery}`)
+    }
+
+    static fetchAnnealedCoils(query) {
+        let whereQuery = 's.is_avilable = true AND s.status = "annealed"'
+        if(query.date) whereQuery = `${whereQuery} and a.date >= "${query.date}" and a.date < "${query.date} 23:59:59"` 
+        let orderQuery = 'ORDER BY s.updated_at desc'
+        if(query.sortBy && query.orderBy) orderQuery = `ORDER BY ${query.sortBy} ${query.orderBy}`
+        else orderQuery = `ORDER BY s.updated_at desc`
+
+        if(query.limit && query.page) orderQuery = `${orderQuery} LIMIT ${query.limit} OFFSET ${(parseInt(query.page) - 1) * parseInt(query.limit)}`
+        return db.execute(`SELECT s.ID, s.slit_no, s.pickling_od, s.rolling_thickness, s.rolled_weight, s.pickled_width, a.date, a.shift, a.charge_no, a.status 
+        FROM slittedCoils s
+        LEFT JOIN annealing a
+        ON s.batch_no = a.id WHERE ${whereQuery} ${orderQuery}`);
     }
 };

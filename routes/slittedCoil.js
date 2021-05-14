@@ -10,6 +10,8 @@ router.put('/', slittedCoilsController.updateSlits)
 
 router.get('/list', slittedCoilsController.getSlittedCoils)
 
+router.get('/annealed', slittedCoilsController.getAnnealedCoils)
+
 router.get('/:id', slittedCoilsController.getSingleSlit)
 
 module.exports = router;
