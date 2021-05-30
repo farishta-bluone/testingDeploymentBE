@@ -25,7 +25,27 @@ exports.postAddCoil = (req, res, next) => {
     .then(() => {
         Coil.fetchAll({brand_no:brand_no,thickness: thickness,date: date })
         .then(([rows]) => {
-            res.send({coil: rows[0]})
+            if(status === "slitted") {
+                let coilData = {slit_date: data.date, status: data.status};
+                if(data.shift) coilData.slit_shift = data.shift;
+                coilData.id = rows[0].id
+                
+                Coil.update(coilData).then(() => {
+                    data.parent_id = rows[0].id
+                    data.slitted_width = rows[0].width
+                    data.slitted_weight = rows[0].weight
+                    data.slit_no = rows[0].brand_no
+                    data.actual_width = rows[0].width
+                    data.actual_weight = rows[0].weight
+
+                    const slitted_coil = new SlittedCoil(null, data.created_at, data.updated_at, data.parent_id, data.slitted_width, data.slitted_weight, data.status, data.is_avilable, data.slit_no, data.actual_width, data.actual_weight)
+                    slitted_coil.save().then(() => {
+                        res.send({coil: rows[0]})
+                    })
+                })
+                
+            } else res.send({coil: rows[0]})
+            
         }).catch(err => console.log(err));
         // res.send("successfuuly added")
     })
@@ -106,6 +126,7 @@ exports.updateSlits = async (req, res, next) => {
             await SlittedCoil.update(_data)
         }
         else { //create slit
+            coil.is_avilable = true
             const slitted_coil = new SlittedCoil(null, coil.created_at, coil.updated_at, coil.parent_id, coil.slitted_width, coil.slitted_weight, coil.status, coil.is_avilable, coil.slit_no, coil.actual_width, coil.actual_weight)
             await slitted_coil.save()
         }
@@ -132,65 +153,3 @@ exports.updateSlits = async (req, res, next) => {
         res.send("successfully deleted")
     }).catch(err => console.log(err));
 };
-
-// will remove it
-// exports.dummyFetch = async (req, res, next) => {
-//     let rows = await Coil.fetchAll({limit: 1000, page:1});
-//           let parents = rows[0];
-//           let slits = await SlittedCoil.fetchWithoutJoint({limit: 1000, page:1});
-//             for(let slit of slits[0]) {
-//                   let parent = parents.filter(item => item.id === slit.parent_id )
-//                   if(parent.length > 0) {
-//                     let c = parent[0]
-//                     slit.parent_info = {
-//                         id: c.id, 
-//                         brand_no: c.brand_no,
-//                         weight: c.weight, 
-//                         width: c.width, 
-//                         date: c.date, 
-//                         thickness: c.thickness, 
-//                         company: c.company, 
-//                         formulated_weight: c.formulated_weight
-//                     };
-                    
-//                     let slit_date = (c.slit_date.toISOString()).split("T")[0]
-//                     await SlittedCoil.update({id: slit.ID, parent_thickness: c.thickness, slit_notes: c.notes, slit_date: slit_date, slit_shift: c.slit_shift,
-//                         parent_info: JSON.stringify(slit.parent_info), status: slit.status }).then(() => {
-//                     }).catch((error) => {
-//                         console.log("not done", error)
-//                     })
-//                   }
-//               };
-//               res.send("its done");   
-//   };
-
-
-
-exports.dummyFetch = async (req, res, next) => {
-    let rows = await Coil.fetchAll({limit: 1000, page:1});
-    let totalSlits = await SlittedCoil.fetchWithoutJoint({limit: 1000, page:1});
-
-    if (rows.length > 0) {  // parents coils
-        
-        for (let c of rows) {
-            let slits = [];
-            let existItem = totalSlits.filter((item) => item.parent_id == c.id);
-            if (existItem.length > 0) {
-                for(let s of existItem) {
-                    let item = {
-                        id: s.ID,
-                        slitted_weight: s.slitted_weight,
-                        slitted_width: s.slitted_width,
-                        actual_weight: s.actual_weight,
-                        actual_width: s.actual_width,
-                        slit_no: s.slit_no,
-                    }
-                    slits.push(item);
-                };
-                let data = {id: c.id, slits_info: JSON.stringify(slits)};
-                await Coil.update(data);    
-
-            }
-        }
-    }
-}

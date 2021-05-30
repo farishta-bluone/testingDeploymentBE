@@ -56,32 +56,58 @@ module.exports = class Coil {
     static previewSlits(id) {
         console.log(id, "id", typeof(id))
         return db.execute(`SELECT s.*, c.brand_no, c.company, c.formulated_weight, c.slit_date, c.slit_shift, c.thickness, c.weight, c.width, c.date, c.notes
-        FROM slittedCoils s
-        LEFT JOIN coils c
+        FROM coils c
+        LEFT JOIN slittedCoils s
         ON s.parent_id = c.id where c.id = ${id}`)
     }
 
     static getCoilsCount(query) {
         let whereQuery = 'is_avilable = true'
         if(query.brand_no) whereQuery = `${whereQuery} and brand_no = "${query.brand_no}"`
-        if(query.status) whereQuery = `${whereQuery} and status = "${query.status}"`
+        // if(query.status) whereQuery = `${whereQuery} and status = "${query.status}"`
         if(query.company) whereQuery = `${whereQuery} and company = "${query.company}"`
         if(query.thickness) whereQuery = `${whereQuery} and thickness = ${query.thickness}`
         if(query.shift) whereQuery = `${whereQuery} and shift = ${query.shift}`
         if(query.slit_shift) whereQuery = `${whereQuery} and slit_shift = ${query.slit_shift}`
         if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}" and date < "${query.date} 23:59:59"` 
+        let statusQuery = ""
+        if (query.status) {
+            let tempStatus = (query.status).toString().split(",");
+            if(tempStatus.length > 1) {
+                for (let i = 0; i< tempStatus.length; i++) {
+                    statusQuery = `${statusQuery} status = "${tempStatus[i]}"`
+                    if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
+                } 
+            }
+            else statusQuery = `status = "${query.status}"`
+        }
+        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND (${statusQuery})`
         return db.execute(`SELECT COUNT(*) FROM coils WHERE ${whereQuery}`)
     }
 
     static fetchAll(query) {
         let whereQuery = 'is_avilable = true'
         if(query.brand_no) whereQuery = `${whereQuery} and brand_no = "${query.brand_no}"`
-        if(query.status) whereQuery = `${whereQuery} and status = "${query.status}"`
+        // if(query.status) whereQuery = `${whereQuery} and status = "${query.status}"`
         if(query.company) whereQuery = `${whereQuery} and company = "${query.company}"`
         if(query.thickness) whereQuery = `${whereQuery} and thickness = ${query.thickness}`
         if(query.shift) whereQuery = `${whereQuery} and shift = ${query.shift}`
         if(query.slit_shift) whereQuery = `${whereQuery} and slit_shift = ${query.slit_shift}`
         if(query.date) whereQuery = `${whereQuery} and date >= "${query.date}" and date < "${query.date} 23:59:59"` 
+        
+        let statusQuery = ""
+        if (query.status) {
+            let tempStatus = (query.status).toString().split(",");
+            if(tempStatus.length > 1) {
+                for (let i = 0; i< tempStatus.length; i++) {
+                    statusQuery = `${statusQuery} status = "${tempStatus[i]}"`
+                    if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
+                } 
+            }
+            else statusQuery = `status = "${query.status}"`
+        }
+        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND (${statusQuery})`
+        
         
         let orderQuery = ''
         if(query.sortBy && query.orderBy) orderQuery = `ORDER BY ${query.sortBy} ${query.orderBy}`

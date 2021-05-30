@@ -43,3 +43,9 @@ exports.getAnnealedCoils = (req, res, next) => {
         }).catch(err => console.log(err));
     }).catch(err => console.log(err));
 };
+
+exports.addSlittedCoil = async (data) => {
+    // add slitted Coil directly 
+    const slitted_coil = new SlittedCoil(null, data.created_at, data.updated_at, data.parent_id, data.slitted_width, data.slitted_weight, data.status, data.is_avilable, data.slit_no, data.actual_width, data.actual_weight)
+    await slitted_coil.save()
+};

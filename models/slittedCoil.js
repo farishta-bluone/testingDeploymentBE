@@ -69,15 +69,15 @@ module.exports = class SlittedCoil {
         let statusQuery = ""
         if (query.status) {
             let tempStatus = (query.status).toString().split(",");
-            if(tempStatus.length > 0) {
+            if(tempStatus.length > 1) {
                 for (let i = 0; i< tempStatus.length; i++) {
                     statusQuery = `${statusQuery} s.status = "${tempStatus[i]}"`
                     if(i != (tempStatus.length-1)) statusQuery = `${statusQuery} OR` 
                 } 
             }
-            else statusQuery = `(s.status = "${query.status}")`
+            else statusQuery = `s.status = "${query.status}"`
         }
-        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND ${statusQuery}`
+        if(whereQuery && statusQuery) whereQuery = `${whereQuery} AND (${statusQuery})`
        
         return db.execute(`SELECT COUNT(*)
         FROM slittedCoils s
